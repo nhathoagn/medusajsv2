@@ -9,6 +9,7 @@ export default defineMiddlewares({
       method: ["POST"],
       additionalDataValidator: {
         brand_id: z.string().optional(),
+        supplier_id: z.string().optional(),
       },
     },
   ],
