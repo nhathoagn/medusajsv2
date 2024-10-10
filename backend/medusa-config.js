@@ -39,6 +39,12 @@ const modules = {
       ],
     },
   },
+  brandModuleService: {
+    resolve: "./modules/brand",
+    // options: {
+    //   apiKey: process.env.BRAND_API_KEY || "temp",
+    // },
+  },
 };
 
 // Redis configuration
@@ -99,6 +105,7 @@ if (sendgridConfigured) {
       ],
     },
   };
+  
 }
 
 /** @type {import('@medusajs/medusa').ConfigModule['projectConfig']} */
