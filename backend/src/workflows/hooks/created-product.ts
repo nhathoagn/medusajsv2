@@ -1,8 +1,8 @@
 import { createProductsWorkflow } from "@medusajs/medusa/core-flows";
 import { StepResponse } from "@medusajs/framework/workflows-sdk";
 import { Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { BRAND_MODULE } from "../../../modules/brand";
-import BrandModuleService from "../../../modules/brand/service";
+import { BRAND_MODULE } from "../../modules/brand";
+import BrandModuleService from "../../modules/brand/service";
 import { SUPPLIER_MODULE } from "src/modules/supplier";
 import SupplierModuleService from "src/modules/supplier/services";
 
