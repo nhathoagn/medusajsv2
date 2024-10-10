@@ -45,6 +45,9 @@ const modules = {
     //   apiKey: process.env.BRAND_API_KEY || "temp",
     // },
   },
+  supplierModuleService: {
+    resolve: "./modules/supplier",
+  },
 };
 
 // Redis configuration
