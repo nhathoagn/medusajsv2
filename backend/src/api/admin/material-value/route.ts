@@ -3,6 +3,7 @@ import {
   ContainerRegistrationKeys,
   remoteQueryObjectFromString,
 } from "@medusajs/framework/utils";
+import { removeDuplicates } from "src/ultil/remove-duplicates";
 import {
   createMaterialValueWorkflow,
   CreateOrUpdateMaterialValueInput,
@@ -39,5 +40,6 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     },
   });
   const { rows } = await remoteQuery(material_value_query).then((res) => res);
-  res.json({ materials_value: rows });
+  const uniqueRows = removeDuplicates(rows, rows.value);
+  res.json({ materials_value: uniqueRows });
 };

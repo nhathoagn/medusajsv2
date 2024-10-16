@@ -4,6 +4,7 @@ import {
   createComponentWorkflow,
 } from "../../../workflows/component/create-component";
 import { remoteQueryObjectFromString } from "@medusajs/framework/utils";
+import { removeDuplicates } from "src/ultil/remove-duplicates";
 
 export const POST = async (
   req: MedusaRequest<CreateComponentInput>,
@@ -35,5 +36,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     },
   });
   const { rows } = await remoteQuery(component_query).then((res) => res);
-  res.json({ component: rows });
+  const uniqueRows = removeDuplicates(rows, rows.name);
+  console.log("uniqueRows", uniqueRows);
+  res.json({ component: uniqueRows });
 };
