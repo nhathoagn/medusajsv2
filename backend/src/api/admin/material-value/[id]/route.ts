@@ -1,12 +1,12 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework";
 import { remoteQueryObjectFromString } from "@medusajs/framework/utils";
+import { CreateOrUpdateMaterialValueInput } from "src/workflows/material-value/create-material-value";
 import { deleteMaterialValueWorkflow } from "src/workflows/material-value/delete-material-value";
-import { CreateOrUpdateMaterialInput } from "src/workflows/materials/create-material";
-import { deleteMaterialWorkflow } from "src/workflows/materials/delete-material";
+import { updateMaterialValueWorkflow } from "src/workflows/material-value/update-material-value";
 import { updateMaterialWorkflow } from "src/workflows/materials/update-material";
 
 export const PATCH = async (
-  req: MedusaRequest<CreateOrUpdateMaterialInput>,
+  req: MedusaRequest<CreateOrUpdateMaterialValueInput>,
   res: MedusaResponse
 ) => {
   const { id } = req.params;
@@ -14,23 +14,23 @@ export const PATCH = async (
     ...req.body,
     id: id,
   };
-  const { result } = await updateMaterialWorkflow(req.scope).run({
+  const { result } = await updateMaterialValueWorkflow(req.scope).run({
     input: data,
   });
-  res.json({ material: result });
+  res.json({ material_value: result });
 };
 
 export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
-  const { result } = await deleteMaterialWorkflow(req.scope).run({
+  const { result } = await deleteMaterialValueWorkflow(req.scope).run({
     input: { id: req.params.id },
   });
-  res.json({ material: result });
+  res.json({ material_value: result });
 };
 
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const remoteQuery = req.scope.resolve("remoteQuery");
-  const material_query = remoteQueryObjectFromString({
-    entryPoint: "material",
+  const material_value_query = remoteQueryObjectFromString({
+    entryPoint: "material_value",
     fields: ["*"],
     variables: {
       filters: {
@@ -38,7 +38,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       },
     },
   });
-  const result = await remoteQuery(material_query).then((res) => res[0]);
+  const result = await remoteQuery(material_value_query).then((res) => res[0]);
   console.log("result", result);
-  res.json({ material: result });
+  res.json({ material_value: result });
 };

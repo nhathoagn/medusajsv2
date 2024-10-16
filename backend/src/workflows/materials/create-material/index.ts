@@ -10,7 +10,7 @@ export type CreateOrUpdateMaterialInput = {
   description?: string;
   rank?: number;
   metadata?: Record<string, any>;
-  component_id?: string;
+  component_id?: string[];
 };
 export const createMaterialWorkflow = createWorkflow(
   "create-material",

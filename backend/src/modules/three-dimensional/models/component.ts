@@ -10,7 +10,7 @@ export const Component = model
         prefix: "comp_",
       })
       .primaryKey(),
-    name: model.text().unique().searchable(),
+    name: model.text().searchable(),
     materials: model.hasMany(() => Material),
     image: model.text().nullable(),
     norm: model.number().default(0),

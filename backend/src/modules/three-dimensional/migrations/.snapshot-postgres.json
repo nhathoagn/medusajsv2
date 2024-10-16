@@ -261,14 +261,6 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_component_name_unique",
-          "columnNames": [],
-          "composite": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_component_name_unique\" ON \"component\" (name) WHERE deleted_at IS NULL"
-        },
-        {
           "keyName": "IDX_component_three_dimensional_id",
           "columnNames": [],
           "composite": false,
@@ -546,7 +538,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "text"
         },
         "created_at": {

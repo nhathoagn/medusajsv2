@@ -18,7 +18,9 @@ export const MaterialValue = model.define("material-value", {
   price: model.number().default(0),
   cost: model.number().default(0),
   status: model.enum(MaterialValueStatus),
-  material: model.belongsTo(() => Material, {
-    mappedBy: "material_value",
-  }),
+  material: model
+    .belongsTo(() => Material, {
+      mappedBy: "material_value",
+    })
+    .nullable(),
 });

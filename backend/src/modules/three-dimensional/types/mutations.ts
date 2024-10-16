@@ -44,3 +44,15 @@ export interface Component {
   default_value: Record<string, any>;
   metadata: Record<string, any>;
 }
+
+export interface ThreeDimensional {
+  id: string;
+  title?: string;
+  url?: string;
+  product_id?: string;
+  components?: Component[];
+  isFlip: boolean;
+  isBranding: boolean;
+  isPhysical: boolean;
+  metadata?: Record<string, any>;
+}

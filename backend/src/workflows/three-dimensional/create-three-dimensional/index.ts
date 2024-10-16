@@ -1,17 +1,24 @@
 import {
   createWorkflow,
+  transform,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk";
 import { Component } from "src/modules/three-dimensional/types/mutations";
-import { createThreeDimensionalStep } from "../step/create-three-dimensional";
-import { ModelNode } from "../create-three-dimensional-with-model-nodes";
-import { createThreeDimensionalWithModuleNodeStep } from "../step/create-three-dimensional-with-model-nodes";
+import {
+  createThreeDimensionalStep,
+  ModelNode,
+} from "../step/create-three-dimensional";
+import { link } from "fs";
+import { linkProductToThreeDimensionalStep } from "../step/link-product-to-three-dimensional";
+import { Modules } from "@medusajs/framework/utils";
+import { THREE_DIMENSION_MODULE } from "src/modules/three-dimensional";
+import { createRemoteLinkStep } from "@medusajs/medusa/core-flows";
 
 export type CreateThreeDimensionalInput = {
   url?: string;
   title: string;
   product_id?: string;
-  component?: Component[];
+  component_id?: string[];
   ui: string;
   isSelfSufficient: boolean;
   isExtraModel: boolean;
@@ -22,16 +29,16 @@ export type CreateThreeDimensionalInput = {
 export const createThreeDimensionalWorkflow = createWorkflow(
   "create-three-dimensional",
   (input: CreateThreeDimensionalInput) => {
-    // let three_dimensional;
-    // // TODO
-    // if (input.model_nodes && input.model_nodes.length > 0) {
-    //   three_dimensional = createThreeDimensionalWithModuleNodeStep({
-    //     model_nodes: input.model_nodes,
-    //   });
-    // } else {
-    //   let  three_dimensional = createThreeDimensionalStep(input);
-    // }
-    let three_dimensional = createThreeDimensionalWithModuleNodeStep(input);
+    // TODO
+
+    const three_dimensional = createThreeDimensionalStep(input);
+    linkProductToThreeDimensionalStep({
+      productId: input.product_id,
+      three_dimensional: three_dimensional,
+    });
+
     return new WorkflowResponse(three_dimensional);
+
+    // let three_dimensional = createThreeDimensionalWithModuleNodeStep(input);
   }
 );

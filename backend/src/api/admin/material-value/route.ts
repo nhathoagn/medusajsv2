@@ -1,19 +1,21 @@
-import { MedusaContainer } from "@medusajs/framework";
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { remoteQueryObjectFromString } from "@medusajs/framework/utils";
 import {
-  CreateThreeDimensionalInput,
-  createThreeDimensionalWorkflow,
-} from "src/workflows/three-dimensional/create-three-dimensional";
+  ContainerRegistrationKeys,
+  remoteQueryObjectFromString,
+} from "@medusajs/framework/utils";
+import {
+  createMaterialValueWorkflow,
+  CreateOrUpdateMaterialValueInput,
+} from "src/workflows/material-value/create-material-value";
 
 export const POST = async (
-  req: MedusaRequest<CreateThreeDimensionalInput>,
+  req: MedusaRequest<CreateOrUpdateMaterialValueInput>,
   res: MedusaResponse
 ) => {
-  const { result } = await createThreeDimensionalWorkflow(req.scope).run({
+  const { result } = await createMaterialValueWorkflow(req.scope).run({
     input: req.body,
   });
-  res.json({ three_dimensional: result });
+  res.json({ materials_value: result });
 };
 
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
@@ -28,7 +30,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     filters[key] = req.query[key];
   }
   const material_value_query = remoteQueryObjectFromString({
-    entryPoint: "three_dimensional",
+    entryPoint: "material_value",
     fields: ["*"],
     variables: {
       filters: filters,
@@ -37,5 +39,5 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     },
   });
   const { rows } = await remoteQuery(material_value_query).then((res) => res);
-  res.json({ three_dimensional: rows });
+  res.json({ materials_value: rows });
 };

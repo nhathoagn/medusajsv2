@@ -1,10 +1,14 @@
 import { MedusaContainer } from "@medusajs/framework";
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import {
+  ContainerRegistrationKeys,
+  remoteQueryObjectFromString,
+} from "@medusajs/framework/utils";
 import {
   CreateThreeDimensionalInput,
   createThreeDimensionalWorkflow,
 } from "src/workflows/three-dimensional/create-three-dimensional";
+import { deleteThreeDimensionalWorkflow } from "src/workflows/three-dimensional/delete-three-dimensional";
 import {
   updateThreeDimensionalInput,
   updateThreeDimensionalWorkflow,
@@ -24,18 +28,43 @@ export const PATCH = async (
   });
   res.json({ three_dimensional: result });
 };
-
-export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
-  const {
-    data: [three_dimensional],
-  } = await query.graph({
-    entity: "three_dimensional",
-    fields: ["*", "component.*"],
-    filters: {
-      id: req.params.id,
+export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
+  const remoteQuery = req.scope.resolve("remoteQuery");
+  const three_dimensional_query = remoteQueryObjectFromString({
+    entryPoint: "three_dimensional",
+    fields: ["*"],
+    variables: {
+      filters: {
+        id: req.params.id,
+      },
     },
   });
+  const three_dimensional = await remoteQuery(three_dimensional_query).then(
+    (res) => res[0]
+  );
+  const data = {
+    id: req.params.id,
+    product_id: three_dimensional.product_id,
+  };
 
-  res.json({ three_dimensional: three_dimensional });
+  const { result } = await deleteThreeDimensionalWorkflow(req.scope).run({
+    input: data,
+  });
+  res.json({ three_dimensional: result });
+};
+export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
+  const remoteQuery = req.scope.resolve("remoteQuery");
+  const three_dimensional_query = remoteQueryObjectFromString({
+    entryPoint: "three_dimensional",
+    fields: ["*"],
+    variables: {
+      filters: {
+        id: req.params.id,
+      },
+    },
+  });
+  const result = await remoteQuery(three_dimensional_query).then(
+    (res) => res[0]
+  );
+  res.json({ three_dimensional: result });
 };
