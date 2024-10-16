@@ -10,12 +10,11 @@ export const updateThreeDimensionalStep = createStep(
     const threeDimensionModuleService: ThreeDimensionalModuleService =
       container.resolve(THREE_DIMENSION_MODULE);
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
-    console.log("updateThreeDimensionalStep", input);
-    logger.error("updateThreeDimensionalStep");
+
     const three_dimension =
       await threeDimensionModuleService.updateThreeDimensionals(input);
-
-    return new StepResponse(three_dimension[0]);
+    console.log("three_dimension", three_dimension);
+    return new StepResponse(three_dimension);
   },
   async (id: string, { container }) => {
     const threeDimensionModuleService: ThreeDimensionalModuleService =

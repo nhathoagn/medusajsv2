@@ -33,7 +33,7 @@ export const updateThreeDimensionalWorkflow = createWorkflow(
     if (input.product_id) {
       linkProductToThreeDimensionalStep({
         productId: input.product_id,
-        three_dimensional_id: input.id,
+        three_dimensional: three_dimensional,
       });
     }
 
