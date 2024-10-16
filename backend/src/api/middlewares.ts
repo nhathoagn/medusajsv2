@@ -7,10 +7,10 @@ export default defineMiddlewares({
     {
       matcher: "/admin/products",
       method: ["POST"],
-      additionalDataValidator: {
-        brand_id: z.string().optional(),
-        supplier_id: z.string().optional(),
-      },
+      // additionalDataValidator: {
+      //   brand_id: z.string().optional(),
+      //   supplier_id: z.string().optional(),
+      // },
     },
   ],
 });

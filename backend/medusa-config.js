@@ -48,6 +48,9 @@ const modules = {
   supplierModuleService: {
     resolve: "./modules/supplier",
   },
+  threeDimensionalModuleService: {
+    resolve: "./modules/three-dimensional",
+  }
 };
 
 // Redis configuration

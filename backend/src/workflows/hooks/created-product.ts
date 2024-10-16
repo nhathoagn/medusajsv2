@@ -8,12 +8,14 @@ import SupplierModuleService from "src/modules/supplier/services";
 
 createProductsWorkflow.hooks.productsCreated(
   async ({ products, additional_data }, { container }) => {
+    console.log(" productsCreated", products, additional_data);
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
+
+    logger.log("Linked brand to products", additional_data);
     if (!additional_data.brand_id || !additional_data.supplier_id) {
       return new StepResponse([], []);
     }
-
     // check that brand exists
-
     //     // check that supplier exists
     await linkProductToBrand(products, additional_data, container);
     await linkProductToSupplier(products, additional_data, container);
