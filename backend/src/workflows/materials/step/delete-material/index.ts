@@ -13,5 +13,10 @@ export const deleteMaterialStep = createStep(
     await threeDimensionModuleService.deleteMaterials(input.id);
 
     return new StepResponse("delete material  success");
+  },
+  async (id: string, { container }) => {
+    const threeDimensionModuleService: ThreeDimensionalModuleService =
+      container.resolve(THREE_DIMENSION_MODULE);
+    await threeDimensionModuleService.restoreMaterials(id);
   }
 );

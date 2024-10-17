@@ -13,10 +13,5 @@ export const updateComponentStep = createStep(
     const component = await threeDimensionModuleService.updateComponents(input);
 
     return new StepResponse(component, component.id);
-  },
-  async (id: string, { container }) => {
-    const threeDimensionModuleService: ThreeDimensionalModuleService =
-      container.resolve(THREE_DIMENSION_MODULE);
-    await threeDimensionModuleService.deleteComponents(id);
   }
 );

@@ -26,8 +26,6 @@ export const createComponentStep = createStep(
         await threeDimensionModuleService.createComponents(input);
       return new StepResponse(three_dimensional, three_dimensional.id);
     }
-
-    return new StepResponse("");
   },
   async (id: string, { container }) => {
     const threeDimensionModuleService: ThreeDimensionalModuleService =

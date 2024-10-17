@@ -13,5 +13,10 @@ export const deleteThreeDimensionalStep = createStep(
     await threeDimensionModuleService.deleteThreeDimensionals(input.id);
 
     return new StepResponse("delete three dimensional success");
+  },
+  async (id: string, { container }) => {
+    const threeDimensionModuleService: ThreeDimensionalModuleService =
+      container.resolve(THREE_DIMENSION_MODULE);
+    await threeDimensionModuleService.restoreThreeDimensionals(id);
   }
 );

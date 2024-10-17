@@ -76,6 +76,11 @@ export const createThreeDimensionalStep = createStep(
 
       return new StepResponse(three_dimension, three_dimension.id);
     }
+  },
+  async (id: string, { container }) => {
+    const threeDimensionModuleService: ThreeDimensionalModuleService =
+      container.resolve(THREE_DIMENSION_MODULE);
+    await threeDimensionModuleService.deleteThreeDimensionals(id);
   }
 );
 

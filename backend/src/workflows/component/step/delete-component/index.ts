@@ -13,5 +13,12 @@ export const deleteComponentStep = createStep(
     await threeDimensionModuleService.deleteComponents(input.id);
 
     return new StepResponse("delete component success");
+  },
+  (deletedComponent: string, { container }) => {
+    const service: ThreeDimensionalModuleService = container.resolve(
+      THREE_DIMENSION_MODULE
+    );
+
+    return service.restoreComponents(deletedComponent);
   }
 );

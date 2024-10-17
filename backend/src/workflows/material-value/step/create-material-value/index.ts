@@ -28,5 +28,10 @@ export const createMaterialValueStep = createStep(
       );
       return new StepResponse(material, material.id);
     }
+  },
+  async (id: string, { container }) => {
+    const threeDimensionModuleService: ThreeDimensionalModuleService =
+      container.resolve(THREE_DIMENSION_MODULE);
+    await threeDimensionModuleService.deleteMaterialValues(id);
   }
 );
