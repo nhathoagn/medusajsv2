@@ -15,132 +15,6 @@
           "nullable": false,
           "mappedType": "text"
         },
-        "url": {
-          "name": "url",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "text"
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
-        "isFlip": {
-          "name": "isFlip",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
-        },
-        "isBranding": {
-          "name": "isBranding",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
-        },
-        "isPhysical": {
-          "name": "isPhysical",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
-        },
-        "metadata": {
-          "name": "metadata",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "default": "now()",
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "default": "now()",
-          "mappedType": "datetime"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        }
-      },
-      "name": "three-dimensional",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "three-dimensional_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "text"
-        },
         "name": {
           "name": "name",
           "type": "text",
@@ -215,15 +89,6 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "three_dimensional_id": {
-          "name": "three_dimensional_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -261,12 +126,12 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_component_three_dimensional_id",
+          "keyName": "IDX_component_name_unique",
           "columnNames": [],
           "composite": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_component_three_dimensional_id\" ON \"component\" (three_dimensional_id) WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_component_name_unique\" ON \"component\" (name) WHERE deleted_at IS NULL"
         },
         {
           "keyName": "component_pkey",
@@ -279,21 +144,7 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {
-        "component_three_dimensional_id_foreign": {
-          "constraintName": "component_three_dimensional_id_foreign",
-          "columnNames": [
-            "three_dimensional_id"
-          ],
-          "localTableName": "public.component",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.three-dimensional",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      }
+      "foreignKeys": {}
     },
     {
       "columns": {
@@ -352,15 +203,6 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "component_id": {
-          "name": "component_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -398,12 +240,12 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_material_component_id",
+          "keyName": "IDX_material_handle_unique",
           "columnNames": [],
           "composite": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_material_component_id\" ON \"material\" (component_id) WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_material_handle_unique\" ON \"material\" (handle) WHERE deleted_at IS NULL"
         },
         {
           "keyName": "material_pkey",
@@ -416,17 +258,123 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {
-        "material_component_id_foreign": {
-          "constraintName": "material_component_id_foreign",
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "component_id_id": {
+          "name": "component_id_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "material_id_id": {
+          "name": "material_id_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "now()",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "now()",
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "component-material",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "IDX_component-material_component_id_id",
+          "columnNames": [],
+          "composite": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_component-material_component_id_id\" ON \"component-material\" (component_id_id) WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_component-material_material_id_id",
+          "columnNames": [],
+          "composite": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_component-material_material_id_id\" ON \"component-material\" (material_id_id) WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "component-material_pkey",
           "columnNames": [
-            "component_id"
+            "id"
           ],
-          "localTableName": "public.material",
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "component-material_component_id_id_foreign": {
+          "constraintName": "component-material_component_id_id_foreign",
+          "columnNames": [
+            "component_id_id"
+          ],
+          "localTableName": "public.component-material",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "public.component",
+          "updateRule": "cascade"
+        },
+        "component-material_material_id_id_foreign": {
+          "constraintName": "component-material_material_id_id_foreign",
+          "columnNames": [
+            "material_id_id"
+          ],
+          "localTableName": "public.component-material",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.material",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }
@@ -607,6 +555,262 @@
             "id"
           ],
           "referencedTableName": "public.material",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "isFlip": {
+          "name": "isFlip",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "isBranding": {
+          "name": "isBranding",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "isPhysical": {
+          "name": "isPhysical",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "now()",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "now()",
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "three-dimensional",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "three-dimensional_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "component_id_id": {
+          "name": "component_id_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "three_dimensional_id_id": {
+          "name": "three_dimensional_id_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "now()",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "now()",
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "component-three-dimensional",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "IDX_component-three-dimensional_component_id_id",
+          "columnNames": [],
+          "composite": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_component-three-dimensional_component_id_id\" ON \"component-three-dimensional\" (component_id_id) WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_component-three-dimensional_three_dimensional_id_id",
+          "columnNames": [],
+          "composite": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_component-three-dimensional_three_dimensional_id_id\" ON \"component-three-dimensional\" (three_dimensional_id_id) WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "component-three-dimensional_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "component-three-dimensional_component_id_id_foreign": {
+          "constraintName": "component-three-dimensional_component_id_id_foreign",
+          "columnNames": [
+            "component_id_id"
+          ],
+          "localTableName": "public.component-three-dimensional",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.component",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "component-three-dimensional_three_dimensional_id_id_foreign": {
+          "constraintName": "component-three-dimensional_three_dimensional_id_id_foreign",
+          "columnNames": [
+            "three_dimensional_id_id"
+          ],
+          "localTableName": "public.component-three-dimensional",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.three-dimensional",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }

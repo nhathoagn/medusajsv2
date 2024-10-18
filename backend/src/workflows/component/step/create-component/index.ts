@@ -3,6 +3,7 @@ import { CreateComponentInput } from "../../create-component";
 import ThreeDimensionalModuleService from "src/modules/three-dimensional/service";
 import { THREE_DIMENSION_MODULE } from "src/modules/three-dimensional";
 import { Component } from "src/modules/three-dimensional/types/mutations";
+import { ThreeDimensional } from "../../../../modules/three-dimensional/types/mutations";
 
 export const createComponentStep = createStep(
   "create-component-step",
@@ -10,17 +11,20 @@ export const createComponentStep = createStep(
     const threeDimensionModuleService: ThreeDimensionalModuleService =
       container.resolve(THREE_DIMENSION_MODULE);
 
-    if (input.three_dimensional_id && input.three_dimensional_id.length > 0) {
-      const { three_dimensional_id, ...data } = input;
-      const create_component = await Promise.all(
-        three_dimensional_id.map(async (three_dimensional_id) => {
-          return await threeDimensionModuleService.createComponents({
-            ...data,
-            three_dimensional_id: three_dimensional_id,
+    if (input.material_id && input.material_id.length > 0) {
+      const { material_id, ...data } = input;
+      const component = await threeDimensionModuleService.createComponents({
+        ...data,
+      });
+      await Promise.all(
+        material_id.map(async (material_id) => {
+          await threeDimensionModuleService.createComponentMaterials({
+            component_id: component.id,
+            material_id: material_id,
           });
         })
       );
-      return new StepResponse(create_component);
+      return new StepResponse(component);
     } else {
       const three_dimensional =
         await threeDimensionModuleService.createComponents(input);

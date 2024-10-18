@@ -12,6 +12,7 @@ import {
   ThreeDimensional,
 } from "src/modules/three-dimensional/types/mutations";
 import { linkProductToThreeDimensionalStep } from "../link-product-to-three-dimensional";
+import { generateSlug } from "src/ultil/generate-slug";
 export type ModelNode = {
   name?: string;
   url?: string;
@@ -26,56 +27,12 @@ export const createThreeDimensionalStep = createStep(
     const remoteQuery = container.resolve("remoteQuery");
 
     // logger.log("createThreeDimensionalStep", input);
-
-    if (input.model_nodes && input.model_nodes.length > 0) {
-      const threeDimensionals = await handleModelNodes(
-        input.model_nodes,
-        container,
-        threeDimensionModuleService
-      );
-      return new StepResponse(threeDimensionals);
-    } else if (!input.component_id && input.product_id) {
-      const three_dimension =
-        await threeDimensionModuleService.createThreeDimensionals(input);
-      return new StepResponse(three_dimension, three_dimension.id);
-    } else {
-      const three_dimension =
-        await threeDimensionModuleService.createThreeDimensionals(input);
-
-      input.component_id.map(async (component_id) => {
-        const componentQuery = remoteQueryObjectFromString({
-          entryPoint: "component",
-          fields: ["*"],
-          variables: {
-            filters: {
-              id: component_id,
-            },
-          },
-        });
-        const components = await remoteQuery(componentQuery).then(
-          (res) => res[0]
-        );
-        if (!components.three_dimensional_id) {
-          await threeDimensionModuleService.updateComponents(component_id, {
-            three_dimensional_id: three_dimension.id,
-          });
-        } else {
-          await threeDimensionModuleService.createComponents({
-            name: components.name,
-            image: components.image,
-            norm: components.norm,
-            ui: components.ui,
-            isSelfSufficient: components.isSelfSufficient,
-            isExtraModel: components.isExtraModel,
-            default_value: components.default_value,
-            metadata: components.metadata,
-            three_dimensional_id: three_dimension.id,
-          });
-        }
-      });
-
-      return new StepResponse(three_dimension, three_dimension.id);
-    }
+    const threeDimensionals = await handleModelNodes(
+      input.model_nodes,
+      container,
+      threeDimensionModuleService
+    );
+    return new StepResponse(threeDimensionals, undefined);
   },
   async (id: string, { container }) => {
     const threeDimensionModuleService: ThreeDimensionalModuleService =
@@ -91,30 +48,47 @@ const handleModelNodes = async (
 ) => {
   const product_id = model_nodes[0].product_id;
   const remoteQuery = container.resolve("remoteQuery");
+
   const three_dimensionalQuery = remoteQueryObjectFromString({
     entryPoint: "three_dimensional",
-    fields: ["*", "component.*"],
+    fields: ["*", "component_three_dimensional.*"],
     variables: {
       filters: {
         product_id: product_id,
       },
     },
   });
+
   const existingThreeDimensional = await remoteQuery(
     three_dimensionalQuery
   ).then((res) => res);
-
-  const existingComponentInProductMap: Map<string, ThreeDimensional> = new Map(
-    existingThreeDimensional.flatMap((pc) =>
-      pc.component.map((comp) => [comp.name, pc])
-    )
-  );
 
   const componentQuery = remoteQueryObjectFromString({
     entryPoint: "component",
     fields: ["*"],
   });
+
   const components = await remoteQuery(componentQuery).then((res) => res);
+
+  console.log("components", components);
+  const existingComponentInProductMap: Map<string, ThreeDimensional> = new Map(
+    components.flatMap((component) => {
+      const matchingThreeDimensionals = existingThreeDimensional.filter(
+        (td) => {
+          console.log(
+            "td.component_three_dimensional",
+            td.component_three_dimensional
+          );
+          return td.component_three_dimensional.some(
+            (ctd) => ctd.component_id_id === component.id
+          );
+        }
+      );
+      return matchingThreeDimensionals.map((td) => [component.name, td]);
+    })
+  );
+  console.log("existingComponentInProductMap", existingComponentInProductMap);
+
   const componentMap: Map<string, ThreeDimensional> = new Map(
     components.map((c) => [c.name, c])
   );
@@ -131,7 +105,6 @@ const handleModelNodes = async (
       parentComponents,
       container
     );
-    console.log("result", result);
     createdThreeDimensionals.push(...result);
   }
   await cleanupUnusedComponents(
@@ -157,6 +130,13 @@ const processModelNode = async (
     container.resolve(THREE_DIMENSION_MODULE);
 
   if (!existingComponentInProductMap.has(name)) {
+    let component = componentMap.get(name);
+
+    if (!component) {
+      component = await threeDimensionModuleService.createComponents({
+        name,
+      });
+    }
     const three_dimensional =
       await threeDimensionModuleService.createThreeDimensionals({
         product_id,
@@ -164,11 +144,11 @@ const processModelNode = async (
         url: url,
       });
 
-    const component = await threeDimensionModuleService.createComponents({
-      name,
+    await threeDimensionModuleService.createComponentThreeDimensionals({
+      component_id: component.id,
       three_dimensional_id: three_dimensional.id,
+      slug: generateSlug(),
     });
-
     result.push(three_dimensional);
     componentMap.set(name, component);
     existingComponentInProductMap.set(name, three_dimensional);
@@ -189,7 +169,6 @@ const processModelNode = async (
     result.push(parentThreeDimensional);
   }
 
-  console.log("Processed ModelNode result", result);
   return result;
 };
 const processParentComponent = async (
@@ -207,24 +186,45 @@ const processParentComponent = async (
 
   if (parentName !== name) {
     parentComponents.add(parentName);
+    console.log("existingComponentInProductMap", existingComponentInProductMap);
     if (!existingComponentInProductMap.has(parentName)) {
-      const parent_p_c =
-        await threeDimensionModuleService.createThreeDimensionals({
-          product_id,
-          title: parentName,
-        });
-
-      const newParentComponent =
-        await threeDimensionModuleService.createComponents({
-          name: parentName,
+      const parentComponent = componentMap.get(parentName);
+      if (parentComponent) {
+        const parent_p_c =
+          await threeDimensionModuleService.createThreeDimensionals({
+            product_id,
+            title: parentComponent.name,
+          });
+        await threeDimensionModuleService.createComponentThreeDimensionals({
+          component_id: parentComponent.id,
           three_dimensional_id: parent_p_c.id,
+          slug: generateSlug(),
         });
+        existingComponentInProductMap.set(parentName, parent_p_c);
+        componentMap.set(parentName, parent_p_c);
 
-      existingComponentInProductMap.set(parentName, parent_p_c);
-      componentMap.set(parentName, newParentComponent);
+        return parent_p_c;
+      } else {
+        const parent_p_c =
+          await threeDimensionModuleService.createThreeDimensionals({
+            product_id,
+            title: parentName,
+          });
 
-      console.log("Created parent ThreeDimensional", parent_p_c);
-      return parent_p_c;
+        const newParentComponent =
+          await threeDimensionModuleService.createComponents({
+            name: name,
+          });
+        await threeDimensionModuleService.createComponentThreeDimensionals({
+          component_id: newParentComponent.id,
+          three_dimensional_id: parent_p_c.id,
+          slug: generateSlug(),
+        });
+        existingComponentInProductMap.set(parentName, parent_p_c);
+        componentMap.set(parentName, newParentComponent);
+
+        return parent_p_c;
+      }
     } else {
       console.log("Existing parent ThreeDimensional", parentName);
 

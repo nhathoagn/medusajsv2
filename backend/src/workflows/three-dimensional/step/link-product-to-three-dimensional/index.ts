@@ -18,7 +18,6 @@ export const linkProductToThreeDimensionalStep = createStep(
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
 
     const linkThreeDimensional = async (threeDim: ThreeDimensional) => {
-      console.log("threeDim", threeDim);
       try {
         await remoteLink.create({
           [Modules.PRODUCT]: {
@@ -41,8 +40,7 @@ export const linkProductToThreeDimensionalStep = createStep(
         );
       }
     };
-    console.log("three_dimensional-is", three_dimensional);
-    console.log("three_dimensional-boolean", Array.isArray(three_dimensional));
+
     if (Array.isArray(three_dimensional)) {
       await Promise.all(three_dimensional.map((v) => linkThreeDimensional(v)));
     } else {

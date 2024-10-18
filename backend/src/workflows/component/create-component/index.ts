@@ -19,7 +19,7 @@ export type CreateComponentInput = {
   isExtraModel: boolean;
   default_value?: Record<string, any>;
   metadata?: Record<string, any>;
-  three_dimensional_id?: string[];
+  material_id?: string[];
 };
 
 export const createComponentWorkflow = createWorkflow(
